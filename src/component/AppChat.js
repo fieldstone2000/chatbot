@@ -4,6 +4,7 @@ import { firebaseDb } from './../firebase/index.js'
 import Message from './Message.js'
 import ChatBox from './ChatBox.js'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import {ApiAiClient} from "api-ai-javascript";
 
 const messagesRef = firebaseDb.ref('messages')
 
@@ -15,7 +16,6 @@ class AppChat extends Component {
     this.state = {
       text : "",
       user_name: "",
-      profile_image: "",
       messages : []
     }
   }
@@ -25,7 +25,7 @@ class AppChat extends Component {
       <MuiThemeProvider>
         <div className="App">
           <div className="App-header">
-            <h2>Chat</h2>
+            <h2>SimpleChat</h2>
           </div>
           <div className="MessageList">
             {this.state.messages.map((m, i) => {
@@ -42,10 +42,6 @@ class AppChat extends Component {
     if(e.target.name == 'user_name') {
       this.setState({
         "user_name": e.target.value,
-      });
-    } else if (e.target.name == 'profile_image') {
-      this.setState({
-        "profile_image": e.target.value,
       });
     } else if (e.target.name == 'text') {
       this.setState({
@@ -64,9 +60,18 @@ class AppChat extends Component {
     }
     messagesRef.push({
       "user_name" : this.state.user_name,
-      "profile_image" : this.state.profile_image,
       "text" : this.state.text,
     })
+    const client = new ApiAiClient({accessToken: '487f2db21bd54c70837e5fc75fac17b0'})
+    .textRequest(this.state.text).then((response) => 
+      {console.log(response);
+        messagesRef.push({
+          "user_name" : "Bot",
+          "text" : response.result.fulfillment.speech,
+        })
+      })
+    .catch((error) => 
+      {console.log(error)})
   }
 
   componentWillMount() {
@@ -77,7 +82,6 @@ class AppChat extends Component {
       msgs.push({
         'text' : m.text,
         'user_name' : m.user_name,
-        'profile_image' : m.profile_image,
       })
 
       this.setState({

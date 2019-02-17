@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "dialogflow": "^0.8.0",
     "firebase": "^5.8.3",
     "material-ui": "^0.20.2",
     "react": "^16.8.2",
@@ -23,5 +24,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "api-ai-javascript": "^2.0.0-beta.21"
+  }
 }
